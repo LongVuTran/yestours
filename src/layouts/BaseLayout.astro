@@ -6,6 +6,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ChatButtons from '../components/ChatButtons.astro';
 import NeedsReviewBanner from '../components/NeedsReviewBanner.astro';
+import { defaultOgImage } from '../components/media';
 
 interface Props {
   lang: Locale;
@@ -42,7 +43,9 @@ const fullTitle = title.includes(site.company.brand)
   ? title
   : `${title} | ${site.company.brand}`;
 const canonicalUrl = new URL(canonical, site.url).href;
-const ogImageUrl = ogImage ? new URL(ogImage, site.url).href : undefined;
+// Trang không truyền ảnh riêng (giới thiệu, liên hệ, điều khoản) vẫn có og:image.
+const ogSrc = ogImage ?? defaultOgImage();
+const ogImageUrl = ogSrc ? new URL(ogSrc, site.url).href : undefined;
 
 const ogLocale: Record<Locale, string> = { vi: 'vi_VN', en: 'en_US', ko: 'ko_KR' };
 const alternateLocales = locales.filter((l) => l !== lang && alternates[l]);

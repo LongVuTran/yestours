@@ -1,11 +1,12 @@
 ---
 import { locales, categories, type Locale, type Category } from '../../config/site';
-import { t, imageAlts } from '../../i18n/ui';
+import { t } from '../../i18n/ui';
 import { tx } from '../../components/copy';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TourCard from '../../components/TourCard.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import { toursFor, featuredTours, coverImage } from '../../components/tours';
+import { heroImage, categoryImage } from '../../components/media';
 import {
   home,
   toursIndex,
@@ -25,10 +26,8 @@ const x = tx(lang);
 const tours = await toursFor(lang);
 const featured = await featuredTours(lang, 6);
 
-// Ảnh hero chuyên dụng, luôn có trong public/images/.
-// coverImage() vẫn dùng cho ogImage khi muốn ảnh theo tour tiêu biểu.
-const hero = { src: '/images/hero.webp', alt: imageAlts.hero[lang] };
-const ogFallback = coverImage(featured) ?? coverImage(tours);
+// Ảnh hero chuyên dụng. Thiếu file thì rơi về ảnh tour tiêu biểu, cuối cùng là gradient.
+const hero = heroImage(lang) ?? coverImage(featured) ?? coverImage(tours);
 
 const categoryMeta: Record<Category, { label: string; desc: string }> = {
   inbound: { label: tr('nav.inbound'), desc: x('cat.inbound.desc') },
@@ -36,12 +35,13 @@ const categoryMeta: Record<Category, { label: string; desc: string }> = {
   domestic: { label: tr('nav.domestic'), desc: x('cat.domestic.desc') },
 };
 
+// Ảnh riêng cho từng nhóm tour; thiếu file thì rơi về ảnh một tour thuộc nhóm đó.
 const categoryCovers = Object.fromEntries(
   categories.map((cat) => [
     cat,
-    { src: `/images/category-${cat}.webp`, alt: imageAlts[cat][lang] },
+    categoryImage(cat, lang) ?? coverImage(tours.filter((tour) => tour.data.category === cat)),
   ])
-) as Record<Category, { src: string; alt: string }>;
+) as Record<Category, { src: string; alt: string } | null>;
 
 /** Chỉ nêu điều kiểm chứng được từ giấy phép kinh doanh — không thêm thành tích, giải thưởng. */
 const why = [
@@ -58,7 +58,7 @@ const why = [
   description={x('hero.subtitle')}
   canonical={home(lang)}
   alternates={alternatesFor(home)}
-  ogImage={hero.src ?? ogFallback?.src}
+  ogImage={hero?.src}
   current="home"
 >
   <!-- Hero -->
@@ -70,16 +70,16 @@ const why = [
           alt={hero.alt}
           fetchpriority="high"
           decoding="async"
-          class="absolute inset-0 -z-10 h-full w-full object-cover opacity-60"
+          class="absolute inset-0 z-0 h-full w-full object-cover"
         />
       )
     }
     <div
-      class="absolute inset-0 -z-10 bg-gradient-to-br from-ocean-950/90 via-ocean-950/70 to-ocean-900/60"
+      class="absolute inset-0 z-0 bg-gradient-to-r from-ocean-950/92 via-ocean-950/80 to-ocean-950/50"
     >
     </div>
 
-    <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+    <div class="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
       <div class="max-w-3xl">
         <p class="text-sm font-semibold tracking-wide text-ocean-200 uppercase">
           {x('hero.eyebrow')}

@@ -92,16 +92,16 @@ const facts = [
           alt={d.imageAlt}
           fetchpriority="high"
           decoding="async"
-          class="absolute inset-0 -z-10 h-full w-full object-cover opacity-55"
+          class="absolute inset-0 z-0 h-full w-full object-cover opacity-55"
         />
       )
     }
     <div
-      class="absolute inset-0 -z-10 bg-gradient-to-t from-ocean-950 via-ocean-950/75 to-ocean-900/50"
+      class="absolute inset-0 z-0 bg-gradient-to-t from-ocean-950 via-ocean-950/75 to-ocean-900/50"
     >
     </div>
 
-    <div class="mx-auto max-w-7xl px-4 pt-8 pb-14 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
+    <div class="relative z-10 mx-auto max-w-7xl px-4 pt-8 pb-14 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
       <nav aria-label={x('a11y.breadcrumb')} class="text-sm text-ocean-200">
         <ol class="flex flex-wrap items-center gap-x-2 gap-y-1">
           <li>
