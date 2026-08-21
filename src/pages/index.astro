@@ -1,17 +1,16 @@
 ---
-
+/**
+ * `/` → `/vi/`.
+ *
+ * Astro BẮT BUỘC phải có file này khi bật `i18n.routing.redirectToDefaultLocale`
+ * (thiếu thì build lỗi MissingIndexForInternationalizationError), NHƯNG nội dung
+ * bên dưới không bao giờ được render: Astro tự sinh trang chuyển hướng cho `/`
+ * và ưu tiên nó hơn. Vì vậy build sẽ log một cảnh báo
+ * "Could not render `` from route `/`" — vô hại, không có cách nào tắt nếu
+ * không sửa `astro.config.mjs` (ngoài phạm vi của Agent Giao diện).
+ *
+ * Đừng thêm nội dung thật vào đây; sửa trang chủ tại `src/pages/[lang]/index.astro`.
+ */
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<a href="/vi/">YESTOURS</a>

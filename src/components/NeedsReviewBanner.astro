@@ -1,0 +1,27 @@
+---
+import type { Locale } from '../config/site';
+import { tx } from './copy';
+
+/**
+ * Cảnh báo nội dung chưa được người bản ngữ duyệt.
+ * CHỈ hiện khi chạy dev — production không bao giờ thấy dải này.
+ */
+interface Props {
+  lang: Locale;
+  show?: boolean;
+}
+const { lang, show = false } = Astro.props;
+const visible = show && import.meta.env.DEV;
+const x = tx(lang);
+---
+
+{
+  visible && (
+    <div
+      role="status"
+      class="border-b border-amber-300 bg-amber-100 px-4 py-2 text-center text-sm text-amber-950"
+    >
+      <strong class="font-semibold">needsReview</strong> — {x('review.banner')}
+    </div>
+  )
+}

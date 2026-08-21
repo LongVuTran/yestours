@@ -29,7 +29,7 @@ const tours = defineCollection({
       .min(1),
     included: z.array(z.string()).default([]),
     excluded: z.array(z.string()).default([]),
-    /** Đường dẫn trong /public, vd: '/images/tours/ba-na-hills.jpg' */
+    /** Đường dẫn trong /public, vd: '/images/tours/ba-na-hills.webp' */
     image: z.string(),
     imageAlt: z.string(),
     /** Bắt buộc ghi nguồn — chỉ dùng ảnh có giấy phép thương mại (Unsplash/Pexels) */

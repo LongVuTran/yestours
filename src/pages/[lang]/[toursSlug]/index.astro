@@ -1,0 +1,148 @@
+---
+import { locales, categories, type Locale, type Category } from '../../../config/site';
+import { t, routeSlugs } from '../../../i18n/ui';
+import { tx } from '../../../components/copy';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TourCard from '../../../components/TourCard.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import { toursFor, countByCategory } from '../../../components/tours';
+import { toursIndex, alternatesFor } from '../../../components/routes';
+
+export function getStaticPaths() {
+  return locales.map((lang) => ({
+    params: { lang, toursSlug: routeSlugs.tours[lang] },
+  }));
+}
+
+const lang = Astro.params.lang as Locale;
+const tr = t(lang);
+const x = tx(lang);
+
+const tours = await toursFor(lang);
+const counts = countByCategory(tours);
+
+const categoryLabel: Record<Category, string> = {
+  inbound: tr('nav.inbound'),
+  outbound: tr('nav.outbound'),
+  domestic: tr('nav.domestic'),
+};
+
+const filters = [
+  { value: 'all', label: x('tours.filter.all'), count: tours.length },
+  ...categories.map((cat) => ({
+    value: cat,
+    label: categoryLabel[cat],
+    count: counts[cat],
+  })),
+];
+---
+
+<BaseLayout
+  lang={lang}
+  title={tr('nav.tours')}
+  description={x('tours.intro')}
+  canonical={toursIndex(lang)}
+  alternates={alternatesFor(toursIndex)}
+  ogImage={tours.find((tour) => tour.data.image?.trim())?.data.image}
+  current="tours"
+>
+  <section class="border-b border-slate-200 bg-ocean-950">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+      <h1 class="text-4xl font-extrabold text-balance text-white sm:text-5xl">
+        {tr('nav.tours')}
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-ocean-100">{x('tours.intro')}</p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+    <!-- Bộ lọc theo nhóm tour -->
+    <div
+      role="group"
+      aria-label={x('tours.filter.label')}
+      class="-mx-1 flex flex-wrap gap-2 px-1"
+    >
+      {
+        filters.map((filter) => (
+          <button
+            type="button"
+            data-filter={filter.value}
+            aria-pressed={filter.value === 'all' ? 'true' : 'false'}
+            class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-ocean-700 hover:text-ocean-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ocean-700 aria-pressed:border-ocean-800 aria-pressed:bg-ocean-800 aria-pressed:text-white"
+          >
+            {filter.label}
+            <span class="ml-1 font-normal opacity-70">({filter.count})</span>
+          </button>
+        ))
+      }
+    </div>
+
+    {
+      tours.length > 0 ? (
+        <>
+          <ul data-tour-grid class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {tours.map((tour, i) => (
+              <li class="h-full" data-category={tour.data.category}>
+                <TourCard tour={tour} lang={lang} eager={i < 3} />
+              </li>
+            ))}
+          </ul>
+
+          <p
+            data-empty-filter
+            hidden
+            role="status"
+            class="mt-10 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600"
+          >
+            {x('tours.empty')}
+          </p>
+        </>
+      ) : (
+        <p class="mt-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">
+          {x('tours.empty')}
+        </p>
+      )
+    }
+  </div>
+
+  <CtaBand lang={lang} />
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLLIElement>('[data-tour-grid] > li');
+  const emptyNote = document.querySelector<HTMLElement>('[data-empty-filter]');
+  const valid = new Set(['all', 'inbound', 'outbound', 'domestic']);
+
+  function apply(value: string) {
+    let visible = 0;
+    items.forEach((item) => {
+      const match = value === 'all' || item.dataset.category === value;
+      item.hidden = !match;
+      if (match) visible += 1;
+    });
+    buttons.forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.filter === value));
+    });
+    if (emptyNote) emptyNote.hidden = visible > 0;
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const value = button.dataset.filter ?? 'all';
+      apply(value);
+      // Giữ lựa chọn trong URL để chia sẻ / quay lại được, không nhảy trang.
+      history.replaceState(null, '', value === 'all' ? location.pathname : `#${value}`);
+    });
+  });
+
+  function fromHash() {
+    const value = location.hash.replace('#', '');
+    apply(valid.has(value) ? value : 'all');
+  }
+
+  if (items.length > 0) {
+    fromHash();
+    window.addEventListener('hashchange', fromHash);
+  }
+</script>

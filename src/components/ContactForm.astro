@@ -1,0 +1,196 @@
+---
+import { site, type Locale } from '../config/site';
+import { t } from '../i18n/ui';
+import { tx } from './copy';
+
+interface Props {
+  lang: Locale;
+  /** Thêm ngữ cảnh vào tiêu đề email, vd tên tour khách đang xem. */
+  subjectContext?: string;
+}
+const { lang, subjectContext } = Astro.props;
+const tr = t(lang);
+const x = tx(lang);
+
+const email = site.contact.emailBranded ?? site.contact.email;
+const subject = subjectContext ? `${x('form.subject')} — ${subjectContext}` : x('form.subject');
+
+/**
+ * Chưa có Formspree ID → KHÔNG được nuốt dữ liệu người dùng.
+ * Chuyển sang mở ứng dụng email với nội dung điền sẵn, kèm hướng dẫn dự phòng.
+ */
+const mode = site.formspreeId ? 'formspree' : 'mailto';
+const action = site.formspreeId ? `https://formspree.io/f/${site.formspreeId}` : undefined;
+
+const fieldClass =
+  'block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-ocean-700 focus:ring-2 focus:ring-ocean-700/30 focus:outline-none';
+const labelClass = 'block text-sm font-semibold text-slate-800';
+---
+
+<form
+  data-contact-form
+  data-mode={mode}
+  data-mailto={email}
+  data-subject={subject}
+  action={action}
+  method={action ? 'POST' : undefined}
+  class="flex flex-col gap-5"
+>
+  <p class="text-sm text-slate-600">
+    {mode === 'mailto' ? x('form.noteMailto') : x('contact.intro')}
+  </p>
+
+  <!-- Bẫy bot; người dùng thật không nhìn thấy trường này. -->
+  <div class="hidden" aria-hidden="true">
+    <label for="cf-company">Company</label>
+    <input id="cf-company" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <input type="hidden" name="_subject" value={subject} />
+  <input type="hidden" name="language" value={lang} />
+  {subjectContext && <input type="hidden" name="tour" value={subjectContext} />}
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <label class={labelClass} for="cf-name">
+        {tr('form.name')}
+        {' '}
+        <span class="text-coral-700" aria-hidden="true">*</span>
+        <span class="sr-only">({tr('form.required')})</span>
+      </label>
+      <input
+        id="cf-name"
+        name="name"
+        type="text"
+        required
+        autocomplete="name"
+        data-field
+        data-label={tr('form.name')}
+        class={`mt-1.5 ${fieldClass}`}
+      />
+    </div>
+
+    <div>
+      <label class={labelClass} for="cf-phone">
+        {tr('form.phone')}
+        {' '}
+        <span class="font-normal text-slate-500">({x('form.optional')})</span>
+      </label>
+      <input
+        id="cf-phone"
+        name="phone"
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        data-field
+        data-label={tr('form.phone')}
+        class={`mt-1.5 ${fieldClass}`}
+      />
+    </div>
+  </div>
+
+  <div>
+    <label class={labelClass} for="cf-email">
+      {tr('form.email')}
+      {' '}
+      <span class="text-coral-700" aria-hidden="true">*</span>
+      <span class="sr-only">({tr('form.required')})</span>
+    </label>
+    <input
+      id="cf-email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      data-field
+      data-label={tr('form.email')}
+      class={`mt-1.5 ${fieldClass}`}
+    />
+  </div>
+
+  <div>
+    <label class={labelClass} for="cf-message">
+      {tr('form.message')}
+      {' '}
+      <span class="text-coral-700" aria-hidden="true">*</span>
+      <span class="sr-only">({tr('form.required')})</span>
+    </label>
+    <textarea
+      id="cf-message"
+      name="message"
+      rows="5"
+      required
+      data-field
+      data-label={tr('form.message')}
+      class={`mt-1.5 ${fieldClass} resize-y`}></textarea>
+  </div>
+
+  <button
+    type="submit"
+    class="inline-flex items-center justify-center rounded-full bg-coral-700 px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-coral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral-800"
+  >
+    {tr('form.submit')}
+  </button>
+
+  <p
+    data-mailto-fallback
+    hidden
+    role="status"
+    class="rounded-lg border border-ocean-200 bg-ocean-50 p-3.5 text-sm text-ocean-950"
+  >
+    {x('form.noteFallback')}
+  </p>
+
+  <noscript>
+    <p class="rounded-lg border border-ocean-200 bg-ocean-50 p-3.5 text-sm text-ocean-950">
+      {x('form.noteFallback')}
+    </p>
+  </noscript>
+
+  <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+    <li>
+      <a
+        href={site.contact.phoneHref}
+        class="font-semibold text-ocean-800 underline underline-offset-4 hover:text-ocean-900"
+      >
+        {tr('cta.callNow')}: {site.contact.phoneDisplay}
+      </a>
+    </li>
+    <li class="min-w-0 break-words">
+      <a
+        href={`mailto:${email}?subject=${encodeURIComponent(subject)}`}
+        class="font-semibold text-ocean-800 underline underline-offset-4 hover:text-ocean-900"
+      >
+        {tr('cta.sendEmail')}: {email}
+      </a>
+    </li>
+  </ul>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+
+  if (form && form.dataset.mode === 'mailto') {
+    form.addEventListener('submit', (event) => {
+      // Không có endpoint để POST — mở ứng dụng email thay vì nuốt dữ liệu.
+      event.preventDefault();
+
+      const lines: string[] = [];
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-field]').forEach(
+        (field) => {
+          const value = field.value.trim();
+          if (value) lines.push(`${field.dataset.label ?? field.name}: ${value}`);
+        }
+      );
+
+      const to = form.dataset.mailto ?? '';
+      const subject = form.dataset.subject ?? '';
+      const href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+
+      const fallback = form.querySelector<HTMLElement>('[data-mailto-fallback]');
+      if (fallback) fallback.hidden = false;
+
+      window.location.href = href;
+    });
+  }
+</script>
