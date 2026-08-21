@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import { locales, localeNames, site } from '../config/site';
+import { tx } from '../components/copy';
+import Logo from '../components/Logo.astro';
+import { home } from '../components/routes';
+
+/**
+ * Một trang 404 duy nhất cho cả site (static host chỉ dùng /404.html).
+ * Không biết trước khách đang ở ngôn ngữ nào nên hiện cả ba, mỗi khối gắn `lang`
+ * đúng để trình đọc màn hình phát âm chuẩn.
+ */
+const blocks = locales.map((lang) => {
+  const x = tx(lang);
+  return {
+    lang,
+    name: localeNames[lang],
+    title: x('notfound.title'),
+    text: x('notfound.text'),
+    cta: x('notfound.home'),
+    href: home(lang),
+  };
+});
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="robots" content="noindex, follow" />
+    <title>404 | {site.company.brand}</title>
+    <meta name="description" content={tx('vi')('notfound.text')} />
+  </head>
+  <body class="flex min-h-screen flex-col bg-white text-slate-800 antialiased">
+    <main class="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-4 py-16 sm:px-6">
+      <a href="/vi/" class="self-start">
+        <Logo />
+      </a>
+
+      <h1 class="mt-10 text-6xl font-extrabold text-ocean-300 sm:text-7xl">404</h1>
+
+      <div class="mt-6 space-y-8">
+        {
+          blocks.map((block) => (
+            <section lang={block.lang} class="border-l-4 border-ocean-100 pl-5">
+              <h2 class="text-xl font-bold text-ocean-950 sm:text-2xl">{block.title}</h2>
+              <p class="mt-1.5 text-slate-600">{block.text}</p>
+              <a
+                href={block.href}
+                class="mt-3 inline-flex items-center gap-2 rounded-full bg-ocean-800 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-ocean-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ocean-700"
+              >
+                {block.cta}
+                <span class="text-ocean-200">· {block.name}</span>
+              </a>
+            </section>
+          ))
+        }
+      </div>
+
+      <p class="mt-12 text-sm text-slate-500">
+        {site.company.nameVi} ·{' '}
+        <a
+          href={site.contact.phoneHref}
+          class="font-medium text-ocean-800 underline underline-offset-4">{site.contact.phoneDisplay}</a
+        >
+      </p>
+    </main>
+  </body>
+</html>

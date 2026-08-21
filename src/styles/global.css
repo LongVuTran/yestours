@@ -1,8 +1,9 @@
-@import 'tailwindcss';
-
-/* Font: Be Vietnam Pro phủ đủ dấu tiếng Việt; Noto Sans KR phủ Hangul. */
+/* Font: Be Vietnam Pro phủ đủ dấu tiếng Việt; Noto Sans KR phủ Hangul.
+   Phải đứng TRƯỚC @import 'tailwindcss' — Tailwind nội tuyến toàn bộ CSS của nó
+   vào đúng vị trí này, nên đặt sau sẽ thành "@import nằm sau rule" và bị cảnh báo. */
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+@import 'tailwindcss';
 
 @theme {
   /* Xanh biển đậm — màu chính */
@@ -38,11 +39,97 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body { font-family: var(--font-sans); }
 /* Trang tiếng Hàn đổi sang font phủ Hangul */
 html[lang='ko'] body { font-family: var(--font-ko); }
+/* Hangul mặc định được xuống dòng ở BẤT KỲ ký tự nào, cắt vỡ cả từ (vd "함께" → "함/께").
+   keep-all buộc ngắt dòng theo từ; break-word vẫn chặn chuỗi dài làm tràn ngang. */
+html[lang='ko'] body { word-break: keep-all; overflow-wrap: break-word; }
 
-/* Ảnh không bao giờ tràn ngang trên mobile */
-img { max-width: 100%; height: auto; }
+/* Ảnh không bao giờ tràn ngang trên mobile.
+   PHẢI nằm trong @layer base: nếu để ngoài layer, rule không-layer thắng mọi
+   utility của Tailwind, khiến `h-full` trên ảnh trong khung aspect-ratio bị
+   `height: auto` đè và ảnh không lấp đầy khung (hở nền ở đáy thẻ tour). */
+@layer base {
+  img { max-width: 100%; height: auto; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* Header dính ở trên nên neo trong trang phải chừa chỗ, không bị che tiêu đề */
+html { scroll-padding-top: 5.5rem; }
+
+/* Chốt chặn cuối: không bao giờ có cuộn ngang ở bất kỳ breakpoint nào */
+body { overflow-x: clip; }
+
+/* Bỏ qua tới nội dung chính — chỉ hiện khi focus bằng bàn phím */
+.skip-link {
+  position: absolute;
+  left: .75rem;
+  top: -100%;
+  z-index: 100;
+  border-radius: .5rem;
+  background: var(--color-ocean-900);
+  padding: .75rem 1rem;
+  font-size: .875rem;
+  font-weight: 600;
+  color: #fff;
+}
+.skip-link:focus-visible { top: .75rem; outline: 2px solid #fff; outline-offset: 2px; }
+
+/*
+ * Kiểu chữ cho nội dung Markdown (trang giới thiệu, điều khoản).
+ * Tự viết vì dự án không cài @tailwindcss/typography.
+ */
+.prose-yes { color: var(--color-slate-700); line-height: 1.75; }
+.prose-yes > * + * { margin-top: 1.125em; }
+.prose-yes h2 {
+  margin-top: 2.25em;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-ocean-950);
+  text-wrap: balance;
+}
+.prose-yes h3 {
+  margin-top: 1.75em;
+  font-size: 1.175rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-ocean-950);
+}
+.prose-yes h2:first-child, .prose-yes h3:first-child { margin-top: 0; }
+.prose-yes ul, .prose-yes ol { padding-left: 1.5em; }
+.prose-yes ul { list-style: disc; }
+.prose-yes ol { list-style: decimal; }
+.prose-yes li + li { margin-top: .5em; }
+.prose-yes li::marker { color: var(--color-ocean-600); }
+.prose-yes a {
+  color: var(--color-ocean-800);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-yes a:hover { color: var(--color-ocean-950); }
+.prose-yes strong { font-weight: 600; color: var(--color-ocean-950); }
+.prose-yes blockquote {
+  border-left: 3px solid var(--color-ocean-200);
+  padding-left: 1rem;
+  color: var(--color-slate-600);
+}
+.prose-yes hr { border-color: var(--color-slate-200); margin-block: 2em; }
+.prose-yes img { border-radius: .75rem; }
+/* Bảng dài tự cuộn trong khung của nó, không đẩy cả trang trôi ngang */
+.prose-yes table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: .925rem;
+}
+.prose-yes th, .prose-yes td {
+  border: 1px solid var(--color-slate-200);
+  padding: .5rem .75rem;
+  text-align: left;
+}
+.prose-yes th { background: var(--color-slate-50); font-weight: 600; }

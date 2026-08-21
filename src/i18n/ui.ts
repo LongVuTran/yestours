@@ -73,3 +73,32 @@ export const routeSlugs = {
   tours: { vi: 'tour', en: 'tours', ko: 'tours' },
   contact: { vi: 'lien-he', en: 'contact', ko: 'contact' },
 } as const;
+
+/**
+ * Alt cho các ảnh cố định (hero + ảnh danh mục). Do ORCHESTRATOR sở hữu.
+ * Mô tả đúng nội dung ảnh thật đã tải về, không phải mô tả chung chung.
+ */
+export const imageAlts = {
+  hero: {
+    vi: 'Bãi biển Đà Nẵng nhìn từ trên cao lúc bình minh, đường bờ biển cong ôm lấy thành phố',
+    en: 'Aerial view of Da Nang beach at sunrise, the shoreline curving along the city skyline',
+    ko: '해돋이 무렵 상공에서 내려다본 다낭 해변과 도시 스카이라인',
+  },
+  inbound: {
+    vi: 'Đèn lồng lụa nhiều màu treo kín một cửa hàng trong phố cổ Hội An về đêm',
+    en: 'Colourful silk lanterns filling a shopfront in Hoi An ancient town at night',
+    ko: '밤의 호이안 구시가지 상점을 가득 채운 색색의 실크 등불',
+  },
+  outbound: {
+    vi: 'Cổng Gwanghwamun của cung Gyeongbokgung ở Seoul, du khách mặc hanbok đi lại phía trước',
+    en: 'Gwanghwamun gate at Gyeongbokgung Palace in Seoul, with visitors in hanbok in the foreground',
+    ko: '서울 경복궁 광화문 앞을 한복 차림으로 오가는 방문객들',
+  },
+  domestic: {
+    vi: 'Bãi biển Mỹ Khê Đà Nẵng ngày nắng, nhìn về phía bán đảo Sơn Trà',
+    en: 'My Khe beach in Da Nang on a clear day, looking towards the Son Tra peninsula',
+    ko: '맑은 날의 다낭 미케 해변, 멀리 손짜 반도가 보인다',
+  },
+} as const;
+
+export type FixedImage = keyof typeof imageAlts;

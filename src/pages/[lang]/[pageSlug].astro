@@ -1,0 +1,187 @@
+---
+import { render } from 'astro:content';
+import { site, locales, type Locale } from '../../config/site';
+import { t, routeSlugs } from '../../i18n/ui';
+import { tx } from '../../components/copy';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { staticPage } from '../../components/tours';
+import { about, contact, terms, termsSlug, alternatesFor } from '../../components/routes';
+
+type PageId = 'about' | 'contact' | 'terms';
+
+export function getStaticPaths() {
+  const defs: { id: PageId; slug: (lang: Locale) => string }[] = [
+    { id: 'about', slug: (lang) => routeSlugs.about[lang] },
+    { id: 'contact', slug: (lang) => routeSlugs.contact[lang] },
+    { id: 'terms', slug: () => termsSlug },
+  ];
+
+  return locales.flatMap((lang) =>
+    defs.map((def) => ({
+      params: { lang, pageSlug: def.slug(lang) },
+      props: { pageId: def.id },
+    }))
+  );
+}
+
+interface Props {
+  pageId: PageId;
+}
+
+const { pageId } = Astro.props;
+const lang = Astro.params.lang as Locale;
+const tr = t(lang);
+const x = tx(lang);
+
+const { entry, isFallback } = await staticPage(pageId, lang);
+const Content = entry && entry.body?.trim() ? (await render(entry)).Content : null;
+
+const defaultTitle: Record<PageId, string> = {
+  about: tr('nav.about'),
+  contact: tr('nav.contact'),
+  terms: x('nav.terms'),
+};
+const defaultDescription: Record<PageId, string> = {
+  about: x('hero.subtitle'),
+  contact: x('contact.intro'),
+  terms: x('nav.terms'),
+};
+const canonicalFor: Record<PageId, (lang: Locale) => string> = { about, contact, terms };
+
+const title = entry?.data.title ?? defaultTitle[pageId];
+const description = entry?.data.description ?? defaultDescription[pageId];
+/** Rơi về bản khác ngôn ngữ thì phải gắn `lang` đúng lên khối nội dung. */
+const contentLang = isFallback ? entry?.data.lang : undefined;
+const email = site.contact.emailBranded ?? site.contact.email;
+const mapSrc = `https://maps.google.com/maps?q=${site.address.mapQuery}&z=16&output=embed`;
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={description}
+  canonical={canonicalFor[pageId](lang)}
+  alternates={alternatesFor(canonicalFor[pageId])}
+  current={pageId}
+  needsReview={entry?.data.needsReview ?? false}
+>
+  <section class="border-b border-slate-200 bg-ocean-950">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+      <h1 class="max-w-3xl text-4xl font-extrabold text-balance text-white sm:text-5xl">
+        {title}
+      </h1>
+      {
+        description !== title && (
+          <p class="mt-4 max-w-2xl text-lg leading-relaxed text-ocean-100">{description}</p>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    isFallback && (
+      <p
+        role="status"
+        class="mx-auto mt-8 max-w-3xl rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 sm:px-6"
+      >
+        {x('page.fallbackNotice')}
+      </p>
+    )
+  }
+
+  {
+    pageId === 'contact' ? (
+      <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        {Content && (
+          <div class="prose-yes mb-12 max-w-3xl" lang={contentLang}>
+            <Content />
+          </div>
+        )}
+
+        <div class="grid gap-10 lg:grid-cols-5 lg:gap-14">
+          <section class="lg:col-span-3" aria-labelledby="contact-form-heading">
+            <h2 id="contact-form-heading" class="text-2xl font-bold text-ocean-950">
+              {tr('form.title')}
+            </h2>
+            <div class="mt-6">
+              <ContactForm lang={lang} />
+            </div>
+          </section>
+
+          <section class="lg:col-span-2" aria-labelledby="contact-info-heading">
+            <h2 id="contact-info-heading" class="text-2xl font-bold text-ocean-950">
+              {x('contact.direct')}
+            </h2>
+
+            <dl class="mt-6 space-y-5 text-sm">
+              <div>
+                <dt class="font-semibold text-slate-500">{tr('footer.company')}</dt>
+                <dd class="mt-1 text-slate-800">{site.company.nameVi}</dd>
+                <dd class="text-slate-600">{site.company.nameEn}</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-slate-500">{tr('footer.taxId')}</dt>
+                <dd class="mt-1 font-medium text-ocean-950">{site.company.taxId}</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-slate-500">{tr('footer.address')}</dt>
+                <dd class="mt-1 text-slate-800">{site.address[lang]}</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-slate-500">{tr('footer.phone')}</dt>
+                <dd class="mt-1">
+                  <a
+                    href={site.contact.phoneHref}
+                    class="font-semibold text-ocean-800 underline underline-offset-4 hover:text-ocean-950"
+                  >
+                    {site.contact.phoneDisplay}
+                  </a>
+                </dd>
+              </div>
+              <div class="min-w-0">
+                <dt class="font-semibold text-slate-500">{tr('footer.email')}</dt>
+                <dd class="mt-1 break-words">
+                  <a
+                    href={`mailto:${email}`}
+                    class="font-semibold text-ocean-800 underline underline-offset-4 hover:text-ocean-950"
+                  >
+                    {email}
+                  </a>
+                </dd>
+              </div>
+            </dl>
+
+            <h3 class="mt-10 text-lg font-bold text-ocean-950">{x('contact.map')}</h3>
+            <div class="mt-4 overflow-hidden rounded-2xl border border-slate-200">
+              <iframe
+                src={mapSrc}
+                title={x('contact.mapTitle')}
+                width="600"
+                height="450"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                class="block aspect-[4/3] h-auto w-full border-0"
+              />
+            </div>
+          </section>
+        </div>
+      </div>
+    ) : (
+      <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
+        {Content ? (
+          <div class="prose-yes" lang={contentLang}>
+            <Content />
+          </div>
+        ) : (
+          <p class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">
+            {x('page.missing')}
+          </p>
+        )}
+      </div>
+    )
+  }
+
+  {pageId !== 'contact' && <CtaBand lang={lang} />}
+</BaseLayout>

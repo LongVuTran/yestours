@@ -1,0 +1,136 @@
+---
+import '../styles/global.css';
+import { site, locales, type Locale } from '../config/site';
+import { tx } from '../components/copy';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ChatButtons from '../components/ChatButtons.astro';
+import NeedsReviewBanner from '../components/NeedsReviewBanner.astro';
+import { defaultOgImage } from '../components/media';
+
+interface Props {
+  lang: Locale;
+  /** Tiêu đề trang, chưa gắn tên thương hiệu. */
+  title: string;
+  description: string;
+  /** Đường dẫn tuyệt đối trong site, vd '/vi/tour/'. */
+  canonical: string;
+  /** URL cùng trang ở ngôn ngữ khác. Thiếu ngôn ngữ nào thì bỏ hreflang ngôn ngữ đó. */
+  alternates?: Partial<Record<Locale, string>>;
+  /** Đường dẫn ảnh trong /public dùng cho Open Graph. */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  current?: 'home' | 'tours' | 'about' | 'contact' | 'terms' | 'none';
+  needsReview?: boolean;
+  noindex?: boolean;
+}
+
+const {
+  lang,
+  title,
+  description,
+  canonical,
+  alternates = {},
+  ogImage,
+  ogType = 'website',
+  current = 'none',
+  needsReview = false,
+  noindex = false,
+} = Astro.props;
+
+const x = tx(lang);
+const fullTitle = title.includes(site.company.brand)
+  ? title
+  : `${title} | ${site.company.brand}`;
+const canonicalUrl = new URL(canonical, site.url).href;
+// Trang không truyền ảnh riêng (giới thiệu, liên hệ, điều khoản) vẫn có og:image.
+const ogSrc = ogImage ?? defaultOgImage();
+const ogImageUrl = ogSrc ? new URL(ogSrc, site.url).href : undefined;
+
+const ogLocale: Record<Locale, string> = { vi: 'vi_VN', en: 'en_US', ko: 'ko_KR' };
+const alternateLocales = locales.filter((l) => l !== lang && alternates[l]);
+
+const organizationLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TravelAgency',
+  name: site.company.nameEn,
+  alternateName: [site.company.brand, site.company.nameVi],
+  url: site.url,
+  taxID: site.company.taxId,
+  foundingDate: String(site.company.establishedYear),
+  telephone: site.contact.phoneHref.replace(/^tel:/, ''),
+  email: site.contact.emailBranded ?? site.contact.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.en,
+    addressCountry: 'VN',
+  },
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    {
+      locales
+        .filter((l) => alternates[l])
+        .map((l) => (
+          <link rel="alternate" hreflang={l} href={new URL(alternates[l]!, site.url).href} />
+        ))
+    }
+    {
+      alternates.vi && (
+        <link rel="alternate" hreflang="x-default" href={new URL(alternates.vi, site.url).href} />
+      )
+    }
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={site.company.brand} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    {
+      alternateLocales.map((l) => (
+        <meta property="og:locale:alternate" content={ogLocale[l]} />
+      ))
+    }
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    <meta name="theme-color" content="#0f3070" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(organizationLd)}
+    />
+  </head>
+
+  <body class="flex min-h-screen flex-col bg-white text-slate-800 antialiased">
+    <a href="#main" class="skip-link">{x('a11y.skip')}</a>
+    <NeedsReviewBanner lang={lang} show={needsReview} />
+    <Header lang={lang} current={current} alternates={alternates} />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <ChatButtons />
+  </body>
+</html>

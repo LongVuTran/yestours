@@ -1,0 +1,14 @@
+# Cloudflare Pages — quy tắc cache và bảo mật.
+# /_astro/* có hash trong tên file nên cache vĩnh viễn an toàn.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Ảnh dùng tên cố định (hero.webp...) nên KHÔNG immutable —
+# thay ảnh mà cache 1 năm thì khách vẫn thấy ảnh cũ.
+/images/*
+  Cache-Control: public, max-age=604800
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
