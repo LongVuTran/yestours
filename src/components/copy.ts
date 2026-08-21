@@ -15,7 +15,7 @@ const extra = {
     'hero.eyebrow': 'Công ty lữ hành tại Đà Nẵng',
     'hero.title': 'Khám phá Việt Nam cùng YESTOURS',
     'hero.subtitle':
-      'Tour đón khách quốc tế, tour đi nước ngoài và tour trong nước — thiết kế theo yêu cầu, phục vụ bằng tiếng Việt, tiếng Anh và tiếng Hàn.',
+      'Từ năm 2017, YESTOURS làm lữ hành tại Đà Nẵng với ban điều hành Việt – Hàn, hiểu kỳ vọng của khách ở cả hai đầu hành trình. Đón khách quốc tế, đưa khách Việt ra nước ngoài, tour trong nước — bằng tiếng Việt, Anh và Hàn.',
 
     'home.categories.title': 'Chúng tôi làm gì',
     'home.categories.subtitle': 'Ba nhóm dịch vụ chính của YESTOURS.',
@@ -91,7 +91,7 @@ const extra = {
     'hero.eyebrow': 'A tour operator based in Da Nang',
     'hero.title': 'Discover Vietnam with YESTOURS',
     'hero.subtitle':
-      'Inbound tours, overseas tours and domestic tours — tailored to your group, with support in Vietnamese, English and Korean.',
+      'A Da Nang tour operator since 2017, with Korean and Vietnamese management who understand what travellers on both sides expect. We arrange trips into Vietnam, trips abroad and trips at home — in Vietnamese, English and Korean.',
 
     'home.categories.title': 'What we do',
     'home.categories.subtitle': 'The three services YESTOURS is built around.',
@@ -167,7 +167,7 @@ const extra = {
     'hero.eyebrow': '다낭에 위치한 여행사',
     'hero.title': 'YESTOURS와 함께 베트남을 만나다',
     'hero.subtitle':
-      '베트남 인바운드 투어, 해외 투어, 국내 투어 — 단체 일정에 맞춰 구성해 드리며 베트남어·영어·한국어로 안내합니다.',
+      '2017년부터 다낭에 자리 잡은 현지 여행사로, 한국인과 베트남인이 함께 경영하기에 한국 손님이 무엇을 기대하는지 압니다. 베트남 인바운드 투어, 해외 투어, 국내 투어를 한국어·영어·베트남어로 안내해 드립니다.',
 
     'home.categories.title': '주요 서비스',
     'home.categories.subtitle': 'YESTOURS가 제공하는 세 가지 서비스입니다.',
