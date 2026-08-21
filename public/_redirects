@@ -1,0 +1,4 @@
+# Vào thẳng bản tiếng Việt thay vì trang meta-refresh chờ 2 giây của Astro.
+# 302 chứ không 301: nếu sau này đổi ngôn ngữ mặc định hoặc thêm dò ngôn ngữ
+# trình duyệt, trình duyệt khách sẽ không giữ cache vĩnh viễn bản cũ.
+/    /vi/    302
