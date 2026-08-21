@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+
+/* Font: Be Vietnam Pro phủ đủ dấu tiếng Việt; Noto Sans KR phủ Hangul. */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+@theme {
+  /* Xanh biển đậm — màu chính */
+  --color-ocean-50:  #eff8ff;
+  --color-ocean-100: #dbeefe;
+  --color-ocean-200: #bfe2fe;
+  --color-ocean-300: #93d0fd;
+  --color-ocean-400: #60b5fa;
+  --color-ocean-500: #3b96f6;
+  --color-ocean-600: #2578eb;
+  --color-ocean-700: #1d60d8;
+  --color-ocean-800: #1e4faf;
+  --color-ocean-900: #0f3070;
+  --color-ocean-950: #0a1f4d;
+
+  /* Cam san hô — màu nhấn cho CTA */
+  --color-coral-50:  #fff5ed;
+  --color-coral-100: #ffe8d5;
+  --color-coral-200: #fecdaa;
+  --color-coral-300: #fdab74;
+  --color-coral-400: #fb7e3c;
+  --color-coral-500: #f95d16;
+  --color-coral-600: #ea430c;
+  --color-coral-700: #c2310c;
+  --color-coral-800: #9a2912;
+  --color-coral-900: #7c2512;
+
+  --font-sans: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-ko: 'Noto Sans KR', 'Be Vietnam Pro', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font-sans); }
+/* Trang tiếng Hàn đổi sang font phủ Hangul */
+html[lang='ko'] body { font-family: var(--font-ko); }
+
+/* Ảnh không bao giờ tràn ngang trên mobile */
+img { max-width: 100%; height: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
