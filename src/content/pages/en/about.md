@@ -16,7 +16,7 @@ YESTOURS is the trading name of **YES Tourist Services Company Limited**, a lice
 
 **Based in Da Nang, not a branch office.** Our vehicles, our guides and our relationships with hotels and restaurants across the region are all here. When something goes wrong — a flight time changes, the weather turns, a traveller falls ill — the person fixing it is in the same city as the group.
 
-**Nearly ten years on the same routes.** We have not tried to sell every destination in the world. Central Vietnam, Korea and Japan are the places we travel often enough to know which season to avoid, what time of day a site is worst, and when to tell a client honestly that an itinerary is trying to do too much.
+**Nearly ten years on the same routes.** We have not tried to sell every destination in the world. Central Vietnam and Korea are the places we travel often enough to know which season to avoid, what time of day a site is worst, and when to tell a client honestly that an itinerary is trying to do too much.
 
 ## What we do
 
