@@ -16,7 +16,7 @@ YESTOURS là thương hiệu của **Công ty TNHH MTV Dịch vụ Du lịch YES
 
 **Đặt tại Đà Nẵng, không phải văn phòng đại diện.** Xe, hướng dẫn viên và quan hệ với các khách sạn, nhà hàng trong khu vực đều là của chúng tôi tại chỗ. Khi có sự cố — chuyến bay đổi giờ, thời tiết xấu, khách bị ốm — người xử lý ở cùng thành phố với đoàn.
 
-**Gần mười năm trên cùng một tuyến.** Chúng tôi không mở rộng sang mọi điểm đến. Miền Trung Việt Nam, Hàn Quốc và Nhật Bản là những nơi chúng tôi đi lại đủ nhiều để biết mùa nào nên tránh, giờ nào một điểm tham quan đông nhất, và khi nào nên nói thẳng với khách rằng một lịch trình là quá tham.
+**Gần mười năm trên cùng một tuyến.** Chúng tôi không mở rộng sang mọi điểm đến. Miền Trung Việt Nam và Hàn Quốc là những nơi chúng tôi đi lại đủ nhiều để biết mùa nào nên tránh, giờ nào một điểm tham quan đông nhất, và khi nào nên nói thẳng với khách rằng một lịch trình là quá tham.
 
 ## Chúng tôi làm gì
 
