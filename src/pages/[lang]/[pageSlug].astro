@@ -5,53 +5,23 @@ import { t, routeSlugs } from '../../i18n/ui';
 import { tx } from '../../components/copy';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContactForm from '../../components/ContactForm.astro';
-import CtaBand from '../../components/CtaBand.astro';
-import { staticPage } from '../../components/tours';
-import { about, contact, terms, termsSlug, alternatesFor } from '../../components/routes';
+import { staticPage } from '../../components/pages';
+import { contact, alternatesFor } from '../../components/routes';
 
-type PageId = 'about' | 'contact' | 'terms';
-
+/** Trang tĩnh duy nhất còn lại là Liên hệ (slug khác nhau theo ngôn ngữ). */
 export function getStaticPaths() {
-  const defs: { id: PageId; slug: (lang: Locale) => string }[] = [
-    { id: 'about', slug: (lang) => routeSlugs.about[lang] },
-    { id: 'contact', slug: (lang) => routeSlugs.contact[lang] },
-    { id: 'terms', slug: () => termsSlug },
-  ];
-
-  return locales.flatMap((lang) =>
-    defs.map((def) => ({
-      params: { lang, pageSlug: def.slug(lang) },
-      props: { pageId: def.id },
-    }))
-  );
+  return locales.map((lang) => ({ params: { lang, pageSlug: routeSlugs.contact[lang] } }));
 }
 
-interface Props {
-  pageId: PageId;
-}
-
-const { pageId } = Astro.props;
 const lang = Astro.params.lang as Locale;
 const tr = t(lang);
 const x = tx(lang);
 
-const { entry, isFallback } = await staticPage(pageId, lang);
+const { entry, isFallback } = await staticPage('contact', lang);
 const Content = entry && entry.body?.trim() ? (await render(entry)).Content : null;
 
-const defaultTitle: Record<PageId, string> = {
-  about: tr('nav.about'),
-  contact: tr('nav.contact'),
-  terms: x('nav.terms'),
-};
-const defaultDescription: Record<PageId, string> = {
-  about: x('hero.subtitle'),
-  contact: x('contact.intro'),
-  terms: x('nav.terms'),
-};
-const canonicalFor: Record<PageId, (lang: Locale) => string> = { about, contact, terms };
-
-const title = entry?.data.title ?? defaultTitle[pageId];
-const description = entry?.data.description ?? defaultDescription[pageId];
+const title = entry?.data.title ?? tr('nav.contact');
+const description = entry?.data.description ?? x('contact.intro');
 /** Rơi về bản khác ngôn ngữ thì phải gắn `lang` đúng lên khối nội dung. */
 const contentLang = isFallback ? entry?.data.lang : undefined;
 const email = site.contact.emailBranded ?? site.contact.email;
@@ -62,9 +32,9 @@ const mapSrc = `https://maps.google.com/maps?q=${site.address.mapQuery}&z=16&out
   lang={lang}
   title={title}
   description={description}
-  canonical={canonicalFor[pageId](lang)}
-  alternates={alternatesFor(canonicalFor[pageId])}
-  current={pageId}
+  canonical={contact(lang)}
+  alternates={alternatesFor(contact)}
+  current="contact"
   needsReview={entry?.data.needsReview ?? false}
 >
   <section class="border-b border-slate-200 bg-ocean-950">
@@ -91,9 +61,7 @@ const mapSrc = `https://maps.google.com/maps?q=${site.address.mapQuery}&z=16&out
     )
   }
 
-  {
-    pageId === 'contact' ? (
-      <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         {Content && (
           <div class="prose-yes mb-12 max-w-3xl" lang={contentLang}>
             <Content />
@@ -167,21 +135,5 @@ const mapSrc = `https://maps.google.com/maps?q=${site.address.mapQuery}&z=16&out
             </div>
           </section>
         </div>
-      </div>
-    ) : (
-      <div class="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
-        {Content ? (
-          <div class="prose-yes" lang={contentLang}>
-            <Content />
-          </div>
-        ) : (
-          <p class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-600">
-            {x('page.missing')}
-          </p>
-        )}
-      </div>
-    )
-  }
-
-  {pageId !== 'contact' && <CtaBand lang={lang} />}
+  </div>
 </BaseLayout>

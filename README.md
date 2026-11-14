@@ -2,7 +2,7 @@
 
 Website chính thức của **CÔNG TY TNHH MTV DỊCH VỤ DU LỊCH YES** (YESTOURS) — Đà Nẵng, Việt Nam.
 
-Tour inbound (đón khách quốc tế đến Việt Nam) · Tour nước ngoài · Tour nội địa.
+Hiện chỉ có hai trang: **Trang chủ** và **Liên hệ** (các trang tour, giới thiệu, điều khoản đã gỡ; URL cũ được 301 về trang chủ trong `public/_redirects`).
 Ba ngôn ngữ: Tiếng Việt · English · 한국어.
 
 ## Công nghệ
@@ -20,7 +20,7 @@ npm run dev
 
 ## Cấu hình
 
-Sửa thông tin liên hệ, kênh chat, bật/tắt hiển thị giá tại **`src/config/site.ts`**.
-Thêm tour mới: tạo file Markdown trong `src/content/tours/{vi,en,ko}/`.
+Sửa thông tin liên hệ, kênh chat tại **`src/config/site.ts`**.
+Nội dung trang Liên hệ: `src/content/pages/{vi,en,ko}/contact.md`.
 
 Chi tiết quy ước xem [CLAUDE.md](./CLAUDE.md).

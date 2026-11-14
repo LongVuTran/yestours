@@ -46,7 +46,7 @@ html[lang='ko'] body { word-break: keep-all; overflow-wrap: break-word; }
 /* Ảnh không bao giờ tràn ngang trên mobile.
    PHẢI nằm trong @layer base: nếu để ngoài layer, rule không-layer thắng mọi
    utility của Tailwind, khiến `h-full` trên ảnh trong khung aspect-ratio bị
-   `height: auto` đè và ảnh không lấp đầy khung (hở nền ở đáy thẻ tour). */
+   `height: auto` đè và ảnh không lấp đầy khung (hở nền ở đáy khung ảnh). */
 @layer base {
   img { max-width: 100%; height: auto; }
 }

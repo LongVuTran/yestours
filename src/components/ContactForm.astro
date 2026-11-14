@@ -5,15 +5,13 @@ import { tx } from './copy';
 
 interface Props {
   lang: Locale;
-  /** Thêm ngữ cảnh vào tiêu đề email, vd tên tour khách đang xem. */
-  subjectContext?: string;
 }
-const { lang, subjectContext } = Astro.props;
+const { lang } = Astro.props;
 const tr = t(lang);
 const x = tx(lang);
 
 const email = site.contact.emailBranded ?? site.contact.email;
-const subject = subjectContext ? `${x('form.subject')} — ${subjectContext}` : x('form.subject');
+const subject = x('form.subject');
 
 /**
  * Chưa có Formspree ID → KHÔNG được nuốt dữ liệu người dùng.
@@ -48,7 +46,6 @@ const labelClass = 'block text-sm font-semibold text-slate-800';
 
   <input type="hidden" name="_subject" value={subject} />
   <input type="hidden" name="language" value={lang} />
-  {subjectContext && <input type="hidden" name="tour" value={subjectContext} />}
 
   <div class="grid gap-5 sm:grid-cols-2">
     <div>
