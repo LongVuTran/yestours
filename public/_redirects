@@ -2,3 +2,27 @@
 # 302 chứ không 301: nếu sau này đổi ngôn ngữ mặc định hoặc thêm dò ngôn ngữ
 # trình duyệt, trình duyệt khách sẽ không giữ cache vĩnh viễn bản cũ.
 /    /vi/    302
+
+# Website chỉ còn Trang chủ + Liên hệ. Các trang tour / giới thiệu / điều khoản
+# đã gỡ: 301 về trang chủ cùng ngôn ngữ để không mất liên kết đã được index.
+/vi/tour  /vi/  301
+/vi/tour/  /vi/  301
+/vi/tour/*  /vi/  301
+/vi/gioi-thieu  /vi/  301
+/vi/gioi-thieu/  /vi/  301
+/vi/terms  /vi/  301
+/vi/terms/  /vi/  301
+/en/tours  /en/  301
+/en/tours/  /en/  301
+/en/tours/*  /en/  301
+/en/about  /en/  301
+/en/about/  /en/  301
+/en/terms  /en/  301
+/en/terms/  /en/  301
+/ko/tours  /ko/  301
+/ko/tours/  /ko/  301
+/ko/tours/*  /ko/  301
+/ko/about  /ko/  301
+/ko/about/  /ko/  301
+/ko/terms  /ko/  301
+/ko/terms/  /ko/  301

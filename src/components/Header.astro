@@ -1,30 +1,22 @@
 ---
-import { categories, type Locale } from '../config/site';
+import type { Locale } from '../config/site';
 import { t } from '../i18n/ui';
 import { tx } from './copy';
-import { home, toursIndex, about, contact, toursByCategory } from './routes';
+import { home, contact } from './routes';
 import Logo from './Logo.astro';
 import LangSwitch from './LangSwitch.astro';
 
 interface Props {
   lang: Locale;
-  current?: 'home' | 'tours' | 'about' | 'contact' | 'terms' | 'none';
+  current?: 'home' | 'contact' | 'none';
   alternates?: Partial<Record<Locale, string>>;
 }
 const { lang, current = 'none', alternates = {} } = Astro.props;
 const tr = t(lang);
 const x = tx(lang);
 
-const categoryLabel = {
-  inbound: tr('nav.inbound'),
-  outbound: tr('nav.outbound'),
-  domestic: tr('nav.domestic'),
-} as const;
-
 const mainNav = [
   { id: 'home', href: home(lang), label: tr('nav.home') },
-  { id: 'tours', href: toursIndex(lang), label: tr('nav.tours') },
-  { id: 'about', href: about(lang), label: tr('nav.about') },
   { id: 'contact', href: contact(lang), label: tr('nav.contact') },
 ] as const;
 
@@ -44,86 +36,20 @@ const linkBase =
     <!-- Điều hướng desktop -->
     <nav aria-label={x('a11y.menu')} class="hidden items-center gap-1 lg:flex">
       {
-        mainNav.map((item) =>
-          item.id === 'tours' ? (
-            <div class="relative" data-tours-menu>
-              <a
-                href={item.href}
-                aria-current={current === 'tours' ? 'page' : undefined}
-                class:list={[
-                  linkBase,
-                  'inline-flex items-center gap-1',
-                  current === 'tours'
-                    ? 'bg-ocean-50 text-ocean-800'
-                    : 'text-slate-700 hover:bg-slate-100 hover:text-ocean-800',
-                ]}
-              >
-                {item.label}
-              </a>
-              <button
-                type="button"
-                data-tours-toggle
-                aria-expanded="false"
-                aria-controls="tours-submenu"
-                class="ml-0.5 rounded-md p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-ocean-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ocean-700"
-              >
-                <span class="sr-only">{x('tours.filter.label')}</span>
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                  data-tours-chevron
-                  class="transition-transform"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </button>
-              <ul
-                id="tours-submenu"
-                hidden
-                class="absolute left-0 top-full mt-1 w-60 rounded-xl border border-slate-200 bg-white p-2 shadow-xl"
-              >
-                <li>
-                  <a
-                    href={item.href}
-                    class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-ocean-50 hover:text-ocean-800"
-                  >
-                    {x('tours.filter.all')}
-                  </a>
-                </li>
-                {categories.map((cat) => (
-                  <li>
-                    <a
-                      href={toursByCategory(lang, cat)}
-                      class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-ocean-50 hover:text-ocean-800"
-                    >
-                      {categoryLabel[cat]}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <a
-              href={item.href}
-              aria-current={current === item.id ? 'page' : undefined}
-              class:list={[
-                linkBase,
-                current === item.id
-                  ? 'bg-ocean-50 text-ocean-800'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-ocean-800',
-              ]}
-            >
-              {item.label}
-            </a>
-          )
-        )
+        mainNav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={current === item.id ? 'page' : undefined}
+            class:list={[
+              linkBase,
+              current === item.id
+                ? 'bg-ocean-50 text-ocean-800'
+                : 'text-slate-700 hover:bg-slate-100 hover:text-ocean-800',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
       }
     </nav>
 
@@ -199,20 +125,6 @@ const linkBase =
               >
                 {item.label}
               </a>
-              {item.id === 'tours' && (
-                <ul class="mt-1 mb-1 ml-3 flex flex-col gap-1 border-l border-slate-200 pl-3">
-                  {categories.map((cat) => (
-                    <li>
-                      <a
-                        href={toursByCategory(lang, cat)}
-                        class="block rounded-lg px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-100 hover:text-ocean-800"
-                      >
-                        {categoryLabel[cat]}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
             </li>
           ))
         }
@@ -255,31 +167,8 @@ const linkBase =
     setMenu(toggle.getAttribute('aria-expanded') !== 'true');
   });
 
-  // Dropdown "Tour" trên desktop
-  const toursToggle = document.querySelector<HTMLButtonElement>('[data-tours-toggle]');
-  const toursMenu = document.getElementById('tours-submenu');
-  const chevron = document.querySelector<SVGElement>('[data-tours-chevron]');
-
-  function setTours(open: boolean) {
-    if (!toursToggle || !toursMenu) return;
-    toursToggle.setAttribute('aria-expanded', String(open));
-    toursMenu.hidden = !open;
-    chevron?.classList.toggle('rotate-180', open);
-  }
-
-  toursToggle?.addEventListener('click', () => {
-    setTours(toursToggle.getAttribute('aria-expanded') !== 'true');
-  });
-
-  document.addEventListener('click', (event) => {
-    const target = event.target as Node;
-    const wrapper = document.querySelector('[data-tours-menu]');
-    if (wrapper && !wrapper.contains(target)) setTours(false);
-  });
-
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
-    setTours(false);
     if (toggle?.getAttribute('aria-expanded') === 'true') {
       setMenu(false);
       toggle.focus();
@@ -290,6 +179,5 @@ const linkBase =
   const desktop = window.matchMedia('(min-width: 1024px)');
   desktop.addEventListener('change', (event) => {
     if (event.matches) setMenu(false);
-    else setTours(false);
   });
 </script>

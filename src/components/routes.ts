@@ -1,4 +1,4 @@
-import { locales, type Locale, type Category } from '../config/site';
+import { locales, type Locale } from '../config/site';
 import { routeSlugs } from '../i18n/ui';
 
 /**
@@ -8,18 +8,8 @@ import { routeSlugs } from '../i18n/ui';
  * `build.format` mặc định của Astro là 'directory' → mọi đường dẫn có dấu / cuối.
  */
 
-/** Slug trang điều khoản giống nhau ở cả ba ngôn ngữ. */
-export const termsSlug = 'terms';
-
 export const home = (lang: Locale) => `/${lang}/`;
-export const toursIndex = (lang: Locale) => `/${lang}/${routeSlugs.tours[lang]}/`;
-export const tourDetail = (lang: Locale, key: string) =>
-  `/${lang}/${routeSlugs.tours[lang]}/${key}/`;
-export const about = (lang: Locale) => `/${lang}/${routeSlugs.about[lang]}/`;
 export const contact = (lang: Locale) => `/${lang}/${routeSlugs.contact[lang]}/`;
-export const terms = (lang: Locale) => `/${lang}/${termsSlug}/`;
-export const toursByCategory = (lang: Locale, category: Category) =>
-  `${toursIndex(lang)}#${category}`;
 
 /** Bản đồ ngôn ngữ → URL cho các trang tĩnh (trang nào cũng có đủ 3 bản). */
 export function alternatesFor(

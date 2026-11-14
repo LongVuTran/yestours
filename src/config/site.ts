@@ -41,7 +41,7 @@ export const site = {
    */
   channels: {
     zalo: null as string | null,        // vd: '0905123456'
-    kakaotalk: null as string | null,   // vd: 'yestours'  — quan trọng nhất cho khách Hàn
+    kakaotalk: null as string | null,   // vd: 'yestours'  — dành cho khách Hàn
     whatsapp: null as string | null,    // vd: '+84905123456'
     facebook: null as string | null,    // vd: 'https://facebook.com/yestours'
     hotline: null as string | null,     // số di động, ngoài số bàn
@@ -50,11 +50,7 @@ export const site = {
   /** Endpoint form liên hệ. Tạo ở formspree.io rồi dán ID vào. */
   formspreeId: null as string | null,
 
-  /**
-   * Không hiển thị giá tour (Vòng 4, Q21c).
-   * Nội dung tour hiện tại là MẪU do AI soạn, chưa phải tour thật của công ty.
-   * Bật true chỉ khi đã có bảng giá thật được duyệt.
-   */
+  /** Không hiển thị giá. Bật true chỉ khi đã có bảng giá thật được duyệt. */
   showPrices: false,
 } as const;
 
@@ -68,6 +64,3 @@ export const localeNames: Record<Locale, string> = {
 };
 
 export const localeFlags: Record<Locale, string> = { vi: '🇻🇳', en: '🇬🇧', ko: '🇰🇷' };
-
-export const categories = ['inbound', 'outbound', 'domestic'] as const;
-export type Category = (typeof categories)[number];
