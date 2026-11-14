@@ -31,6 +31,22 @@ export function heroImage(lang: Locale): SiteImage | null {
   return assetExists(HERO_SRC) ? { src: HERO_SRC, alt: imageAlts.hero[lang] } : null;
 }
 
+/**
+ * Ảnh minh hoạ hai dịch vụ ở trang chủ. Thiếu file thì thẻ dịch vụ hiện không có ảnh
+ * (không nhả ra thẻ <img> gãy).
+ * Nguồn ảnh (đều dùng thương mại được): bana → Ivan Wong (Unsplash License); hotel → Wikimedia Commons, CC0 (không cần ghi nguồn).
+ */
+const SERVICE_SRC = {
+  banaHills: '/images/bana-hills.webp',
+  hotel: '/images/hotel.webp',
+} as const;
+export type ServiceImageKey = keyof typeof SERVICE_SRC;
+
+export function serviceImage(key: ServiceImageKey, lang: Locale): SiteImage | null {
+  const src = SERVICE_SRC[key];
+  return assetExists(src) ? { src, alt: imageAlts[key][lang] } : null;
+}
+
 /** Ảnh Open Graph mặc định cho trang không có ảnh riêng. */
 export function defaultOgImage(): string | undefined {
   return assetExists(HERO_SRC) ? HERO_SRC : undefined;

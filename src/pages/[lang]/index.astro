@@ -4,7 +4,7 @@ import { t } from '../../i18n/ui';
 import { tx } from '../../components/copy';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaBand from '../../components/CtaBand.astro';
-import { heroImage } from '../../components/media';
+import { heroImage, serviceImage } from '../../components/media';
 import { home, contact, alternatesFor } from '../../components/routes';
 
 export function getStaticPaths() {
@@ -19,8 +19,8 @@ const x = tx(lang);
 const hero = heroImage(lang);
 
 const services = [
-  { title: x('svc.1.title'), desc: x('svc.1.desc') },
-  { title: x('svc.2.title'), desc: x('svc.2.desc') },
+  { title: x('svc.1.title'), desc: x('svc.1.desc'), image: serviceImage('banaHills', lang) },
+  { title: x('svc.2.title'), desc: x('svc.2.desc'), image: serviceImage('hotel', lang) },
 ];
 
 /** Chỉ nêu điều kiểm chứng được từ giấy phép kinh doanh — không thêm thành tích, giải thưởng. */
@@ -103,9 +103,24 @@ const why = [
     <ul class="mt-10 grid gap-6 sm:grid-cols-2">
       {
         services.map((item) => (
-          <li class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 class="text-xl font-bold text-ocean-950">{item.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+          <li class="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            {item.image && (
+              <div class="aspect-[16/9] overflow-hidden bg-ocean-100">
+                <img
+                  src={item.image.src}
+                  alt={item.image.alt}
+                  width="1600"
+                  height="900"
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover"
+                />
+              </div>
+            )}
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-ocean-950">{item.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+            </div>
           </li>
         ))
       }

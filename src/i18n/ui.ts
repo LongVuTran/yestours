@@ -70,6 +70,16 @@ export const imageAlts = {
     en: 'Aerial view of Da Nang beach at sunrise, the shoreline curving along the city skyline',
     ko: '해돋이 무렵 상공에서 내려다본 다낭 해변과 도시 스카이라인',
   },
+  banaHills: {
+    vi: 'Cầu Vàng ở Bà Nà Hills uốn cong trên hai bàn tay đá khổng lồ, du khách đi bộ trên cầu giữa nền trời xanh',
+    en: 'The Golden Bridge at Ba Na Hills curving over two giant stone hands, with visitors walking across under a blue sky',
+    ko: '바나힐의 골든 브리지. 거대한 두 돌 손이 떠받친 다리 위를 푸른 하늘 아래 관광객들이 걷고 있다',
+  },
+  hotel: {
+    vi: 'Phòng nghỉ khách sạn với ghế sofa trước ô cửa kính lớn nhìn ra biển và hồ bơi',
+    en: 'A hotel suite with a sofa in front of a large picture window overlooking the sea and a pool',
+    ko: '바다와 수영장이 내다보이는 큰 통창 앞에 소파가 놓인 호텔 객실',
+  },
 } as const;
 
 export type FixedImage = keyof typeof imageAlts;
